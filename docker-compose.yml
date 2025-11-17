@@ -1,0 +1,82 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:15
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: appuser
+      POSTGRES_PASSWORD: apppassword
+      POSTGRES_DB: appdb
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U appuser -d appdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  auth:
+    build:
+      context: .
+      dockerfile: auth_service/Dockerfile
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8001:8000"
+    environment:
+      DATABASE_URL: postgresql://appuser:apppassword@db:5432/appdb
+
+  course:
+    build:
+      context: .
+      dockerfile: course_service/Dockerfile
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8002:8000"
+    environment:
+      DATABASE_URL: postgresql://appuser:apppassword@db:5432/appdb
+
+  notification:
+    build:
+      context: .
+      dockerfile: notification_service/Dockerfile
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8003:8000"
+    environment:
+      DATABASE_URL: postgresql://appuser:apppassword@db:5432/appdb
+
+  admin:
+    build:
+      context: .
+      dockerfile: admin_service/Dockerfile
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8004:8000"
+    environment:
+      DATABASE_URL: postgresql://appuser:apppassword@db:5432/appdb
+
+  disaster_ai:
+    build:
+      context: .
+      dockerfile: disaster_ai_service/Dockerfile
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8005:8000"
+    environment:
+      DATABASE_URL: postgresql://appuser:apppassword@db:5432/appdb
+
+volumes:
+  pgdata:

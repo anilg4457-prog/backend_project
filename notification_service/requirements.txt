@@ -1,0 +1,16 @@
+fastapi
+uvicorn
+sqlalchemy
+pydantic
+requests
+psycopg2-binary
+
+
+
+
+
+
+
+    #    requirements.txt   <-- CREATE THIS FILE
+    #    Dockerfile
+    #    app/
