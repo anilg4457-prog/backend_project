@@ -1,4 +1,4 @@
-# Backend Project (Auth, Courses, Notification, Admin, Disaster AI)
+#disaster_ai_service Backend Project (Auth, Courses, Notification, Admin, Disaster AI)
 
 This repository contains a minimal but complete backend skeleton for:
 - auth_service
